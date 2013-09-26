@@ -255,7 +255,6 @@
     };
 
     TasksCtrl.prototype.bindTaskDeleted = function(task) {
-      console.log("uiuiuh");
       Lungo.Notification.show("check", "Task deleted", 1);
       return this.renderCounts();
     };
