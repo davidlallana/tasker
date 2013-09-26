@@ -10,10 +10,14 @@ class TaskCtrl extends Monocle.Controller
   events:
     "click [data-action=save]"    : "onSave"
 
+  _views = undefined
+
   constructor: ->
     super
     @new = @_new
     @show = @_show
+    _views = []
+    __Model.Task.bind "create", @bindTaskCreated
 
   # Events
   onSave: (event) ->
@@ -27,8 +31,7 @@ class TaskCtrl extends Monocle.Controller
         @current.list = @list.val
         @current.when = @when.val
         @current.save()
-        Lungo.Notification.hide
-        Lungo.Notification.show "check", "Task modified"
+        Lungo.Notification.show "check", "Task modified",1
     else
       # New task
       __Model.Task.create
@@ -37,10 +40,15 @@ class TaskCtrl extends Monocle.Controller
         list        : @list.val()
         when        : @when.val()
         important   : @important[0].checked
+        Lungo.Notification.show "check", "Task created",1
 
   changeList: ->
-    Lungo.Notification.hide
-    Lungo.Notification.show "check", "Task modified"
+    for view in _views
+      if view.model.uid == @current.uid
+        console.log view
+        view.model.destroy()  
+        view.destroy()  
+        view.refresh()    
     __Model.Task.create
       name        : @current.name
       description : @current.description
@@ -48,6 +56,13 @@ class TaskCtrl extends Monocle.Controller
       when        : @current.when
       important   : @important[0].checked
       done        : @current.done
+    Lungo.Notification.show "check", "Task modified",1
+
+  bindTaskCreated: (task) =>
+      context = if task.important is true then "high" else "normal"
+      tt = new __View.Task model: task, container: "article##{context} ul"
+      _views.push tt
+      Lungo.Notification.show "check", "Task created",1
 
 
   # Private Methods

@@ -95,10 +95,13 @@
 
 (function() {
   var TaskCtrl,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   TaskCtrl = (function(_super) {
+    var _views;
+
     __extends(TaskCtrl, _super);
 
     TaskCtrl.prototype.elements = {
@@ -113,10 +116,15 @@
       "click [data-action=save]": "onSave"
     };
 
+    _views = void 0;
+
     function TaskCtrl() {
+      this.bindTaskCreated = __bind(this.bindTaskCreated, this);
       TaskCtrl.__super__.constructor.apply(this, arguments);
       this["new"] = this._new;
       this.show = this._show;
+      _views = [];
+      __Model.Task.bind("create", this.bindTaskCreated);
     }
 
     TaskCtrl.prototype.onSave = function(event) {
@@ -129,8 +137,7 @@
           this.current.list = this.list.val;
           this.current.when = this.when.val;
           this.current.save();
-          Lungo.Notification.hide;
-          return Lungo.Notification.show("check", "Task modified");
+          return Lungo.Notification.show("check", "Task modified", 1);
         }
       } else {
         return __Model.Task.create({
@@ -139,14 +146,22 @@
           list: this.list.val(),
           when: this.when.val(),
           important: this.important[0].checked
-        });
+        }, Lungo.Notification.show("check", "Task created", 1));
       }
     };
 
     TaskCtrl.prototype.changeList = function() {
-      Lungo.Notification.hide;
-      Lungo.Notification.show("check", "Task modified");
-      return __Model.Task.create({
+      var view, _i, _len;
+      for (_i = 0, _len = _views.length; _i < _len; _i++) {
+        view = _views[_i];
+        if (view.model.uid === this.current.uid) {
+          console.log(view);
+          view.model.destroy();
+          view.destroy();
+          view.refresh();
+        }
+      }
+      __Model.Task.create({
         name: this.current.name,
         description: this.current.description,
         list: this.current.list,
@@ -154,6 +169,18 @@
         important: this.important[0].checked,
         done: this.current.done
       });
+      return Lungo.Notification.show("check", "Task modified", 1);
+    };
+
+    TaskCtrl.prototype.bindTaskCreated = function(task) {
+      var context, tt;
+      context = task.important === true ? "high" : "normal";
+      tt = new __View.Task({
+        model: task,
+        container: "article#" + context + " ul"
+      });
+      _views.push(tt);
+      return Lungo.Notification.show("check", "Task created", 1);
     };
 
     TaskCtrl.prototype._new = function(current) {
@@ -218,25 +245,18 @@
     };
 
     TasksCtrl.prototype.bindTaskCreated = function(task) {
-      var context;
-      context = task.important === true ? "high" : "normal";
-      new __View.Task({
-        model: task,
-        container: "article#" + context + " ul"
-      });
       Lungo.Router.back();
-      Lungo.Notification.show("check", "Task created", 3);
       return this.renderCounts();
     };
 
     TasksCtrl.prototype.bindTaskUpdated = function(task) {
       Lungo.Router.back();
-      Lungo.Notification.show("check", "Task modified", 3);
       return this.renderCounts();
     };
 
     TasksCtrl.prototype.bindTaskDeleted = function(task) {
-      Lungo.Notification.show("check", "Task deleted", 3);
+      console.log("uiuiuh");
+      Lungo.Notification.show("check", "Task deleted", 1);
       return this.renderCounts();
     };
 
