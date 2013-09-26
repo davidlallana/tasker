@@ -43,7 +43,7 @@ class TaskCtrl extends Monocle.Controller
         list        : @list.val()
         when        : @when.val()
         important   : @important[0].checked
-        Lungo.Notification.show "check", "Task created",1
+        Lungo.Notification.show "check", "Task created", 1
 
   changeList: ->
     for view in _views
@@ -58,13 +58,13 @@ class TaskCtrl extends Monocle.Controller
       when        : @current.when
       important   : @important[0].checked
       done        : @current.done
-    Lungo.Notification.show "check", "Task modified",1
+    Lungo.Notification.show "check", "Task modified", 1
 
   bindTaskCreated: (task) =>
     context = if task.important is true then "high" else "normal"
     tt = new __View.Task model: task, container: "article##{context} ul"
     _views.push tt
-    Lungo.Notification.show "check", "Task created",1
+    Lungo.Notification.show "check", "Task created", 1
 
   # Private Methods
   _new: (@current=null) ->

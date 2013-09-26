@@ -27,10 +27,21 @@ class __View.Task extends Monocle.View
     @refresh()
     console.log "[DONE]", @model
 
-  onDelete: (event) -> 
-    @remove()
-    @model.destroy()  
-    console.log "[DELETE]", @model
+  onDelete: (event) ->
+    Lungo.Notification.confirm
+      icon: "trash"
+      title: "Are you sure?"
+      description: "You are going to delete this task"
+      accept:
+        label: "Yes"
+        callback: =>
+          @remove()
+          @model.destroy()
+          console.log "[DELETE]", @model
+      cancel:
+        label: "No"
+        callback: ->
+          @
 
   onView: (event) ->
     __Controller.Task.show @model

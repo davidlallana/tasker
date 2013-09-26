@@ -78,9 +78,26 @@
     };
 
     Task.prototype.onDelete = function(event) {
-      this.remove();
-      this.model.destroy();
-      return console.log("[DELETE]", this.model);
+      var _this = this;
+      return Lungo.Notification.confirm({
+        icon: "trash",
+        title: "Are you sure?",
+        description: "You are going to delete this task",
+        accept: {
+          label: "Yes",
+          callback: function() {
+            _this.remove();
+            _this.model.destroy();
+            return console.log("[DELETE]", _this.model);
+          }
+        },
+        cancel: {
+          label: "No",
+          callback: function() {
+            return this;
+          }
+        }
+      });
     };
 
     Task.prototype.onView = function(event) {
