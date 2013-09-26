@@ -14,7 +14,6 @@ class __View.Task extends Monocle.View
   constructor: ->
     super
     @append @model
-    __Model.Task.bind "destroy", @bindTaskDeleted
 
   events:
     "swipeLeft li"                    :  "onDelete"
@@ -25,17 +24,13 @@ class __View.Task extends Monocle.View
   onDone: (event) ->
     @model.done =  !@model.done
     @model.save()
+    @refresh()
     console.log "[DONE]", @model
 
   onDelete: (event) -> 
-    Lungo.Notification.hide
-    Lungo.Notification.show "check", "Success", 3, alert("Tarea borrada")
     @remove()
     @model.destroy()  
     console.log "[DELETE]", @model
 
   onView: (event) ->
     __Controller.Task.show @model
-
-  bindTaskDeleted: (task) => 
-    @task.destroy()

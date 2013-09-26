@@ -27,9 +27,10 @@ class TaskCtrl extends Monocle.Controller
         @current.list = @list.val
         @current.when = @when.val
         @current.save()
+        Lungo.Notification.hide
+        Lungo.Notification.show "check", "Task modified"
     else
       # New task
-      Lungo.Notification.show()
       __Model.Task.create
         name        : @name.val()
         description : @description.val()
@@ -38,6 +39,8 @@ class TaskCtrl extends Monocle.Controller
         important   : @important[0].checked
 
   changeList: ->
+    Lungo.Notification.hide
+    Lungo.Notification.show "check", "Task modified"
     __Model.Task.create
       name        : @current.name
       description : @current.description
@@ -45,7 +48,8 @@ class TaskCtrl extends Monocle.Controller
       when        : @current.when
       important   : @important[0].checked
       done        : @current.done
-   
+
+
   # Private Methods
   _new: (@current=null) ->
     @name.val ""

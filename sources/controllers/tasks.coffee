@@ -20,15 +20,16 @@ class __Controller.TasksCtrl extends Monocle.Controller
       context = if task.important is true then "high" else "normal"
       new __View.Task model: task, container: "article##{context} ul"
       Lungo.Router.back()
-      Lungo.Notification.hide()
+      Lungo.Notification.show "check", "Task created",3
       @renderCounts()
 
     bindTaskUpdated: (task) =>
       Lungo.Router.back()
-      Lungo.Notification.hide()
+      Lungo.Notification.show "check", "Task modified",3
       @renderCounts()
     
-    bindTaskDeleted: (task) => 
+    bindTaskDeleted: (task) =>
+      Lungo.Notification.show "check", "Task deleted",3
       @renderCounts()
 
     renderCounts: ->

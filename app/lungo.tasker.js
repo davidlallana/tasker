@@ -50,8 +50,7 @@
 }).call(this);
 
 (function() {
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
+  var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   __View.Task = (function(_super) {
@@ -60,10 +59,8 @@
     Task.prototype.template = "<li class=\"thumb\">\n  <fieldset><input type=\"checkbox\" {{#done}}checked{{/done}}></fieldset>\n  <div>\n    <div class=\"on-right\">{{list}}</div>\n    <strong class=\"text\">{{name}}</strong>\n    <small>{{description}}</small>\n  </div>\n</li>";
 
     function Task() {
-      this.bindTaskDeleted = __bind(this.bindTaskDeleted, this);
       Task.__super__.constructor.apply(this, arguments);
       this.append(this.model);
-      __Model.Task.bind("destroy", this.bindTaskDeleted);
     }
 
     Task.prototype.events = {
@@ -76,12 +73,11 @@
     Task.prototype.onDone = function(event) {
       this.model.done = !this.model.done;
       this.model.save();
+      this.refresh();
       return console.log("[DONE]", this.model);
     };
 
     Task.prototype.onDelete = function(event) {
-      Lungo.Notification.hide;
-      Lungo.Notification.show("check", "Success", 3, alert("Tarea borrada"));
       this.remove();
       this.model.destroy();
       return console.log("[DELETE]", this.model);
@@ -89,10 +85,6 @@
 
     Task.prototype.onView = function(event) {
       return __Controller.Task.show(this.model);
-    };
-
-    Task.prototype.bindTaskDeleted = function(task) {
-      return this.task.destroy();
     };
 
     return Task;
@@ -136,10 +128,11 @@
           this.current.description = this.description.val;
           this.current.list = this.list.val;
           this.current.when = this.when.val;
-          return this.current.save();
+          this.current.save();
+          Lungo.Notification.hide;
+          return Lungo.Notification.show("check", "Task modified");
         }
       } else {
-        Lungo.Notification.show();
         return __Model.Task.create({
           name: this.name.val(),
           description: this.description.val(),
@@ -151,6 +144,8 @@
     };
 
     TaskCtrl.prototype.changeList = function() {
+      Lungo.Notification.hide;
+      Lungo.Notification.show("check", "Task modified");
       return __Model.Task.create({
         name: this.current.name,
         description: this.current.description,
@@ -230,17 +225,18 @@
         container: "article#" + context + " ul"
       });
       Lungo.Router.back();
-      Lungo.Notification.hide();
+      Lungo.Notification.show("check", "Task created", 3);
       return this.renderCounts();
     };
 
     TasksCtrl.prototype.bindTaskUpdated = function(task) {
       Lungo.Router.back();
-      Lungo.Notification.hide();
+      Lungo.Notification.show("check", "Task modified", 3);
       return this.renderCounts();
     };
 
     TasksCtrl.prototype.bindTaskDeleted = function(task) {
+      Lungo.Notification.show("check", "Task deleted", 3);
       return this.renderCounts();
     };
 
