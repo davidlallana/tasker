@@ -128,15 +128,22 @@
     }
 
     TaskCtrl.prototype.onSave = function(event) {
+      var view, _i, _len;
       if (this.current) {
         if (this.current.important !== this.important[0].checked) {
           return this.changeList();
         } else {
-          this.current.name = this.name.val;
-          this.current.description = this.description.val;
-          this.current.list = this.list.val;
-          this.current.when = this.when.val;
+          this.current.name = this.name.val();
+          this.current.description = this.description.val();
+          this.current.list = this.list.val();
+          this.current.when = this.when.val();
           this.current.save();
+          for (_i = 0, _len = _views.length; _i < _len; _i++) {
+            view = _views[_i];
+            if (view.model.uid === this.current.uid) {
+              view.refresh();
+            }
+          }
           return Lungo.Notification.show("check", "Task modified", 1);
         }
       } else {
@@ -155,7 +162,6 @@
       for (_i = 0, _len = _views.length; _i < _len; _i++) {
         view = _views[_i];
         if (view.model.uid === this.current.uid) {
-          console.log(view);
           view.model.destroy();
           view.destroy();
           view.refresh();

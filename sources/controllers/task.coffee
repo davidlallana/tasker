@@ -26,11 +26,14 @@ class TaskCtrl extends Monocle.Controller
       if @current.important != @important[0].checked
       then @changeList()
       else
-        @current.name = @name.val  
-        @current.description = @description.val 
-        @current.list = @list.val
-        @current.when = @when.val
+        @current.name = @name.val()
+        @current.description = @description.val()
+        @current.list = @list.val()
+        @current.when = @when.val()
         @current.save()
+        for view in _views
+          if view.model.uid == @current.uid
+            view.refresh()    
         Lungo.Notification.show "check", "Task modified",1
     else
       # New task
@@ -45,7 +48,6 @@ class TaskCtrl extends Monocle.Controller
   changeList: ->
     for view in _views
       if view.model.uid == @current.uid
-        console.log view
         view.model.destroy()  
         view.destroy()  
         view.refresh()    
@@ -59,11 +61,10 @@ class TaskCtrl extends Monocle.Controller
     Lungo.Notification.show "check", "Task modified",1
 
   bindTaskCreated: (task) =>
-      context = if task.important is true then "high" else "normal"
-      tt = new __View.Task model: task, container: "article##{context} ul"
-      _views.push tt
-      Lungo.Notification.show "check", "Task created",1
-
+    context = if task.important is true then "high" else "normal"
+    tt = new __View.Task model: task, container: "article##{context} ul"
+    _views.push tt
+    Lungo.Notification.show "check", "Task created",1
 
   # Private Methods
   _new: (@current=null) ->
