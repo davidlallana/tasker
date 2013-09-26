@@ -84,7 +84,7 @@
         title: "Are you sure?",
         description: "You are going to delete this task",
         accept: {
-          label: "Yes",
+          label: "Delete task",
           callback: function() {
             _this.remove();
             _this.model.destroy();
@@ -92,7 +92,7 @@
           }
         },
         cancel: {
-          label: "No",
+          label: "Cancel",
           callback: function() {
             return this;
           }
@@ -161,7 +161,7 @@
               view.refresh();
             }
           }
-          return Lungo.Notification.show("check", "Task modified", 1);
+          return Lungo.Notification.show("pencil", "Task modified", 1);
         }
       } else {
         return __Model.Task.create({
@@ -192,7 +192,7 @@
         important: this.important[0].checked,
         done: this.current.done
       });
-      return Lungo.Notification.show("check", "Task modified", 1);
+      return Lungo.Notification.show("pencil", "Task modified", 1);
     };
 
     TaskCtrl.prototype.bindTaskCreated = function(task) {
@@ -278,7 +278,7 @@
     };
 
     TasksCtrl.prototype.bindTaskDeleted = function(task) {
-      Lungo.Notification.show("check", "Task deleted", 1);
+      Lungo.Notification.show("trash", "Task deleted", 1);
       return this.renderCounts();
     };
 

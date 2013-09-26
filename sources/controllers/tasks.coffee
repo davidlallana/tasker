@@ -25,7 +25,7 @@ class __Controller.TasksCtrl extends Monocle.Controller
       @renderCounts()
     
     bindTaskDeleted: (task) =>
-      Lungo.Notification.show "check", "Task deleted",1
+      Lungo.Notification.show "trash", "Task deleted",1
       @renderCounts()
 
     renderCounts: ->

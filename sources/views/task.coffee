@@ -33,13 +33,13 @@ class __View.Task extends Monocle.View
       title: "Are you sure?"
       description: "You are going to delete this task"
       accept:
-        label: "Yes"
+        label: "Delete task"
         callback: =>
           @remove()
           @model.destroy()
           console.log "[DELETE]", @model
       cancel:
-        label: "No"
+        label: "Cancel"
         callback: ->
           @
 

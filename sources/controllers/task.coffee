@@ -34,7 +34,7 @@ class TaskCtrl extends Monocle.Controller
         for view in _views
           if view.model.uid == @current.uid
             view.refresh()    
-        Lungo.Notification.show "check", "Task modified",1
+        Lungo.Notification.show "pencil", "Task modified",1
     else
       # New task
       __Model.Task.create
@@ -58,7 +58,7 @@ class TaskCtrl extends Monocle.Controller
       when        : @current.when
       important   : @important[0].checked
       done        : @current.done
-    Lungo.Notification.show "check", "Task modified", 1
+    Lungo.Notification.show "pencil", "Task modified", 1
 
   bindTaskCreated: (task) =>
     context = if task.important is true then "high" else "normal"
